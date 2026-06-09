@@ -1,990 +1,451 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang=es>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>A lo que Vino | Vinoteca – Concepción del Uruguay</title>
-<link rel="icon" type="image/png" href="https://res.cloudinary.com/dp8qpqog1/image/upload/q_auto/f_auto/v1780811737/650829241_18057992165476903_7334256583987012667_n_bssqm7.jpg">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --wine:   #7e0c0c;
-    --wine-deep: #530707;
-    --gold:   #b8821a;
-    --gold-light: #d4a438;
-    --cream:  #faf6f0;
-    --cream-dark: #f0e8db;
-    --dark:   #1a1208;
-    --text:   #3d2b10;
-    --muted:  #8a7158;
-    --white:  #ffffff;
-    --nav-h:  80px;
-  }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    font-family: 'Jost', sans-serif;
-    background: var(--cream);
-    color: var(--text);
-    font-weight: 300;
-    line-height: 1.7;
-    overflow-x: hidden;
-  }
-
-  /* ── NAV ─────────────────────────────────── */
-  nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 9999;
-    height: var(--nav-h);
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0 5%;
-    background: rgba(250,246,240,0.97);
-    border-bottom: 1px solid rgba(184,130,26,0.2);
-    backdrop-filter: blur(8px);
-    transition: box-shadow .3s;
-  }
-  nav.scrolled { box-shadow: 0 2px 20px rgba(126,12,12,0.08); }
-
-  .nav-logo {
-    display: flex; align-items: center; gap: 14px;
-    text-decoration: none;
-  }
-  .nav-logo img { height: 52px; width: auto; }
-  .nav-logo-text { display: flex; flex-direction: column; line-height: 1.1; }
-  .nav-logo-text span:first-child {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 22px; font-weight: 600; color: var(--wine);
-    letter-spacing: 0.5px;
-  }
-  .nav-logo-text span:last-child {
-    font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
-    color: var(--gold); font-weight: 500;
-  }
-
-  .nav-links {
-    display: flex; align-items: center; gap: 36px;
-    list-style: none;
-  }
-  .nav-links a {
-    font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
-    font-weight: 500; color: var(--text); text-decoration: none;
-    position: relative; padding-bottom: 3px;
-    transition: color .25s;
-  }
-  .nav-links a::after {
-    content: ''; position: absolute; bottom: 0; left: 0;
-    width: 0; height: 1px; background: var(--wine);
-    transition: width .3s;
-  }
-  .nav-links a:hover { color: var(--wine); }
-  .nav-links a:hover::after { width: 100%; }
-
-  .nav-social { display: flex; gap: 16px; }
-  .nav-social a {
-    color: var(--muted); text-decoration: none; font-size: 15px;
-    transition: color .25s;
-  }
-  .nav-social a:hover { color: var(--wine); }
-
-  .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
-  .hamburger span { width: 24px; height: 1.5px; background: var(--text); display: block; transition: all .3s; }
-
-  /* ── HERO ─────────────────────────────────── */
-  .hero {
-    height: 100vh; min-height: 600px;
-    position: relative; overflow: hidden;
-    display: flex; align-items: center; justify-content: center;
-    background: var(--dark);
-  }
-
-  .hero-slides { position: absolute; inset: 0; }
-  .hero-slide {
-    position: absolute; inset: 0;
-    background-size: cover; background-position: center;
-    opacity: 0; transition: opacity 1.5s ease;
-  }
-  .hero-slide.active { opacity: 1; }
-  .hero-slide::after {
-    content: ''; position: absolute; inset: 0;
-    background: linear-gradient(to bottom, rgba(26,18,8,0.35) 0%, rgba(26,18,8,0.55) 100%);
-  }
-
-  /* Wine-themed gradient overlays instead of real photos */
-  .slide-1 { background: radial-gradient(ellipse at 30% 40%, #5a0d0d 0%, #1a0808 50%, #0d0503 100%); }
-  .slide-2 { background: radial-gradient(ellipse at 70% 60%, #3d1a02 0%, #1a0808 40%, #080310 100%); }
-  .slide-3 { background: radial-gradient(ellipse at 50% 30%, #4a1a08 0%, #200808 50%, #0a0508 100%); }
-
-  .hero-content {
-    position: relative; z-index: 2;
-    text-align: center; color: var(--white);
-    padding: 0 20px;
-    animation: fadeUp .9s ease both;
-    animation-delay: .3s;
-  }
-  .hero-eyebrow {
-    font-size: 11px; letter-spacing: 4px; text-transform: uppercase;
-    color: var(--gold-light); font-weight: 500; margin-bottom: 20px;
-    display: block;
-  }
-  .hero-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(52px, 8vw, 96px); font-weight: 300;
-    line-height: 1.0; letter-spacing: -1px;
-    margin-bottom: 24px;
-  }
-  .hero-title em { font-style: italic; color: var(--gold-light); }
-  .hero-subtitle {
-    font-size: 14px; letter-spacing: 1.5px; opacity: .8;
-    margin-bottom: 44px; font-weight: 300;
-  }
-  .hero-cta {
-    display: inline-flex; gap: 16px; flex-wrap: wrap; justify-content: center;
-  }
-  .hero-pills {
-    display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-top: 28px;
-  }
-  .hero-pill {
-    padding: 8px 18px; font-size: 12px; letter-spacing: .5px;
-    border: 1px solid rgba(255,255,255,0.25); color: rgba(255,255,255,0.85);
-    background: rgba(255,255,255,0.07); backdrop-filter: blur(4px);
-  }
-  .btn {
-    display: inline-block; padding: 14px 36px;
-    font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase;
-    font-weight: 500; text-decoration: none; cursor: pointer;
-    transition: all .3s; border: none; font-family: 'Jost', sans-serif;
-  }
-  .btn-primary {
-    background: var(--wine); color: var(--white);
-    border: 1px solid var(--wine);
-  }
-  .btn-primary:hover { background: var(--wine-deep); border-color: var(--wine-deep); }
-  .btn-outline {
-    background: transparent; color: var(--white);
-    border: 1px solid rgba(255,255,255,0.6);
-  }
-  .btn-outline:hover { background: rgba(255,255,255,0.1); border-color: var(--white); }
-
-  .hero-scroll {
-    position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%);
-    z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 8px;
-    color: rgba(255,255,255,0.5); font-size: 9px; letter-spacing: 3px; text-transform: uppercase;
-    animation: float 2.5s ease-in-out infinite;
-  }
-  .hero-scroll svg { opacity: .5; }
-
-  /* ── DECORATIVE DIVIDER ───────────────────── */
-  .divider {
-    display: flex; align-items: center; gap: 20px;
-    margin: 0 auto 50px; width: fit-content;
-  }
-  .divider-line { width: 60px; height: 1px; background: var(--gold); opacity: .4; }
-  .divider svg { color: var(--gold); opacity: .7; }
-
-  /* ── SECTIONS ─────────────────────────────── */
-  section { padding: 100px 5%; }
-  .section-inner { max-width: 1200px; margin: 0 auto; }
-  .section-label {
-    font-size: 10px; letter-spacing: 4px; text-transform: uppercase;
-    color: var(--gold); font-weight: 500; margin-bottom: 12px; display: block;
-  }
-  .section-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(34px, 5vw, 56px); font-weight: 300; line-height: 1.1;
-    color: var(--wine-deep); margin-bottom: 24px;
-  }
-  .section-title em { font-style: italic; }
-  .section-body { font-size: 15px; color: var(--muted); max-width: 540px; line-height: 1.85; }
-
-  /* ── ABOUT SPLIT ─────────────────────────── */
-  .about-grid {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
-  }
-  .about-visual {
-    position: relative; aspect-ratio: 3/4;
-    background: var(--wine-deep);
-    overflow: hidden;
-  }
-  .about-visual::before {
-    content: ''; position: absolute; inset: 0;
-    background: radial-gradient(ellipse at 30% 60%, rgba(184,130,26,0.2) 0%, transparent 70%);
-  }
-  .about-visual-inner {
-    position: absolute; inset: 24px; border: 1px solid rgba(184,130,26,0.3);
-    display: flex; align-items: center; justify-content: center;
-  }
-  .about-logo-large {
-    opacity: 0.15; filter: invert(1) brightness(2);
-    width: 60%; height: auto;
-  }
-  .about-badge {
-    position: absolute; bottom: -20px; right: -20px;
-    width: 120px; height: 120px;
-    background: var(--gold); border-radius: 50%;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    color: var(--white); text-align: center;
-  }
-  .about-badge strong { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 600; line-height: 1; }
-  .about-badge span { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; opacity: .85; }
-
-  .about-text { padding-left: 20px; }
-  .about-features { margin-top: 36px; display: flex; flex-direction: column; gap: 20px; }
-  .about-feature { display: flex; gap: 16px; align-items: flex-start; }
-  .about-feature-icon {
-    width: 36px; height: 36px; border-radius: 50%;
-    background: rgba(126,12,12,0.08); flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center;
-    color: var(--wine);
-  }
-  .about-feature p { font-size: 14px; color: var(--muted); margin-top: 2px; }
-  .about-feature strong { color: var(--text); font-weight: 500; font-size: 15px; display: block; }
-
-  /* ── VINOS / PRODUCTS ─────────────────────── */
-  .vinos-section { background: var(--cream-dark); }
-  .vinos-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 60px; }
-  .vinos-grid {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px;
-  }
-  .vino-card {
-    position: relative; overflow: hidden;
-    aspect-ratio: 2/3; background: var(--dark);
-    cursor: pointer;
-  }
-  .vino-card-bg {
-    position: absolute; inset: 0;
-    background-size: cover; background-position: center;
-    transition: transform .6s ease;
-  }
-  .vino-card:hover .vino-card-bg { transform: scale(1.06); }
-  .vino-card-overlay {
-    position: absolute; inset: 0;
-    background: linear-gradient(to top, rgba(26,18,8,0.9) 0%, transparent 60%);
-    display: flex; flex-direction: column; justify-content: flex-end;
-    padding: 32px; color: var(--white);
-    transition: opacity .3s;
-  }
-  .vino-card-label { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold-light); margin-bottom: 6px; }
-  .vino-card-name { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 300; line-height: 1.1; }
-  .vino-card-region { font-size: 12px; color: rgba(255,255,255,0.6); margin-top: 4px; }
-  .vino-card-detail {
-    position: absolute; inset: 0;
-    background: rgba(126,12,12,0.9);
-    display: flex; flex-direction: column; justify-content: center; align-items: center;
-    padding: 32px; text-align: center; color: var(--white);
-    opacity: 0; transition: opacity .3s;
-  }
-  .vino-card:hover .vino-card-detail { opacity: 1; }
-  .vino-card-detail p { font-size: 13px; opacity: .85; margin: 12px 0 20px; line-height: 1.7; }
-
-  /* Wine color swatches as backgrounds */
-  .bg-tinto   { background: radial-gradient(ellipse at 50% 80%, #6b0d0d 0%, #2d0505 100%); }
-  .bg-blanco  { background: radial-gradient(ellipse at 50% 30%, #6b5c1a 0%, #2d2605 100%); }
-  .bg-rosado  { background: radial-gradient(ellipse at 50% 50%, #8a2040 0%, #3d0d1c 100%); }
-  .bg-espumante { background: radial-gradient(ellipse at 50% 20%, #5c5020 0%, #252012 100%); }
-  .bg-reserva { background: radial-gradient(ellipse at 30% 60%, #4a0808 0%, #1a0202 100%); }
-  .bg-natural { background: radial-gradient(ellipse at 70% 40%, #4a3010 0%, #1a1005 100%); }
-
-  .vino-icon {
-    font-size: 48px; opacity: .3; margin-bottom: 16px;
-    font-family: 'Cormorant Garamond', serif; font-weight: 300; color: var(--gold-light);
-  }
-
-  /* ── EXPERIENCIA ──────────────────────────── */
-  .exp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
-  .exp-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; margin-top: 50px; }
-  .exp-stat {
-    padding: 30px 24px; background: var(--wine);
-    color: var(--white); text-align: center;
-  }
-  .exp-stat:nth-child(even) { background: var(--wine-deep); }
-  .exp-stat strong {
-    font-family: 'Cormorant Garamond', serif; font-size: 48px; font-weight: 300;
-    display: block; line-height: 1; color: var(--gold-light);
-  }
-  .exp-stat span { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; opacity: .8; margin-top: 6px; display: block; }
-
-  .exp-visual {
-    position: relative; padding: 40px;
-    background: var(--cream-dark);
-  }
-  .exp-visual-quote {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(18px, 2.5vw, 26px); font-weight: 300; font-style: italic;
-    color: var(--wine-deep); line-height: 1.5; position: relative; z-index: 1;
-  }
-  .exp-visual-quote::before {
-    content: '"'; font-size: 120px; color: var(--gold); opacity: .12;
-    position: absolute; top: -30px; left: -10px; z-index: 0;
-    font-family: 'Cormorant Garamond', serif; line-height: 1;
-  }
-  .exp-visual-attr { margin-top: 20px; font-size: 12px; color: var(--muted); letter-spacing: 1px; }
-
-  .exp-services { margin-top: 40px; display: flex; flex-direction: column; gap: 0; }
-  .exp-service {
-    display: flex; align-items: center; gap: 20px;
-    padding: 20px 0; border-bottom: 1px solid rgba(184,130,26,0.15);
-  }
-  .exp-service:first-child { border-top: 1px solid rgba(184,130,26,0.15); }
-  .exp-service-num {
-    font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 300;
-    color: var(--gold); opacity: .6; min-width: 44px; text-align: center;
-  }
-  .exp-service strong { display: block; font-weight: 500; font-size: 15px; margin-bottom: 2px; }
-  .exp-service p { font-size: 13px; color: var(--muted); }
-
-  /* ── CONTACTO ─────────────────────────────── */
-  .contacto-section { background: var(--wine-deep); color: var(--white); }
-  .contacto-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
-  .contacto-section .section-title { color: var(--cream); }
-  .contacto-section .section-label { color: var(--gold-light); }
-  .contacto-section .section-body { color: rgba(255,255,255,0.65); }
-
-  .contacto-info { display: flex; flex-direction: column; gap: 28px; margin-top: 40px; }
-  .contacto-item { display: flex; gap: 16px; align-items: flex-start; }
-  .contacto-icon {
-    width: 40px; height: 40px; border: 1px solid rgba(184,130,26,0.4);
-    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-    color: var(--gold-light);
-  }
-  .contacto-item strong { display: block; color: var(--white); font-weight: 400; font-size: 14px; margin-bottom: 2px; }
-  .contacto-item span { font-size: 13px; color: rgba(255,255,255,0.55); }
-
-  .contacto-form { display: flex; flex-direction: column; gap: 16px; margin-top: 40px; }
-  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  .form-field { display: flex; flex-direction: column; gap: 6px; }
-  .form-field label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.5); }
-  .form-field input, .form-field textarea, .form-field select {
-    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15);
-    color: var(--white); padding: 12px 16px; font-family: 'Jost', sans-serif;
-    font-size: 14px; font-weight: 300; outline: none;
-    transition: border-color .25s;
-  }
-  .form-field input:focus, .form-field textarea:focus, .form-field select:focus {
-    border-color: var(--gold);
-  }
-  .form-field input::placeholder, .form-field textarea::placeholder { color: rgba(255,255,255,0.3); }
-  .form-field textarea { resize: vertical; min-height: 100px; }
-  .form-field select option { background: var(--wine-deep); }
-  .btn-wine {
-    background: var(--gold); color: var(--dark); border: none;
-    padding: 16px 36px; align-self: flex-start; margin-top: 8px;
-  }
-  .btn-wine:hover { background: var(--gold-light); }
-
-  .horarios { margin-top: 36px; }
-  .horarios-title { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold-light); margin-bottom: 16px; }
-  .horario-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 13px; }
-  .horario-row:last-child { border-bottom: none; }
-  .horario-row span:first-child { color: rgba(255,255,255,0.6); }
-  .horario-row span:last-child { color: var(--white); font-weight: 400; }
-
-  /* ── MAPA ─────────────────────────────────── */
-  .map-section { padding: 0; }
-  .map-embed {
-    width: 100%; height: 380px; border: none; filter: sepia(20%) contrast(1.05);
-  }
-
-  /* ── FOOTER ───────────────────────────────── */
-  footer {
-    background: var(--dark); color: rgba(255,255,255,0.5);
-    padding: 50px 5% 30px;
-  }
-  .footer-inner { max-width: 1200px; margin: 0 auto; }
-  .footer-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 40px; }
-  .footer-logo img { height: 44px; filter: brightness(0) invert(1); opacity: .7; }
-  .footer-tagline { font-family: 'Cormorant Garamond', serif; font-size: 15px; font-style: italic; color: rgba(255,255,255,0.4); margin-top: 8px; }
-  .footer-nav { display: flex; gap: 60px; }
-  .footer-nav-col h4 { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold-light); margin-bottom: 16px; font-weight: 500; }
-  .footer-nav-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
-  .footer-nav-col a { color: rgba(255,255,255,0.45); text-decoration: none; font-size: 13px; transition: color .25s; }
-  .footer-nav-col a:hover { color: var(--gold-light); }
-  .footer-bottom { border-top: 1px solid rgba(255,255,255,0.08); padding-top: 24px; display: flex; justify-content: space-between; align-items: center; }
-  .footer-credit { font-size: 11px; }
-  .footer-credit a { color: var(--gold-light); text-decoration: none; opacity: .7; }
-  .footer-social { display: flex; gap: 16px; }
-  .footer-social a { color: rgba(255,255,255,0.4); font-size: 16px; text-decoration: none; transition: color .25s; }
-  .footer-social a:hover { color: var(--gold-light); }
-
-  /* ── ANIMATIONS ───────────────────────────── */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(24px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  @keyframes float {
-    0%, 100% { transform: translateX(-50%) translateY(0); }
-    50% { transform: translateX(-50%) translateY(6px); }
-  }
-
-  .reveal {
-    opacity: 0; transform: translateY(30px);
-    transition: opacity .8s ease, transform .8s ease;
-  }
-  .reveal.in { opacity: 1; transform: translateY(0); }
-  .reveal-delay-1 { transition-delay: .1s; }
-  .reveal-delay-2 { transition-delay: .2s; }
-  .reveal-delay-3 { transition-delay: .3s; }
-
-  /* ── MOBILE ───────────────────────────────── */
-  @media (max-width: 900px) {
-    .nav-links, .nav-social { display: none; }
-    .hamburger { display: flex; }
-    nav.open .nav-links {
-      display: flex; flex-direction: column; position: absolute;
-      top: var(--nav-h); left: 0; right: 0;
-      background: rgba(250,246,240,0.98); padding: 24px 5%;
-      gap: 20px; border-bottom: 1px solid rgba(184,130,26,0.2);
-    }
-
-    .about-grid, .exp-grid, .contacto-grid { grid-template-columns: 1fr; gap: 40px; }
-    .vinos-grid { grid-template-columns: repeat(2, 1fr); }
-    .footer-top { flex-direction: column; gap: 30px; }
-    .footer-nav { flex-direction: column; gap: 24px; }
-    .form-row { grid-template-columns: 1fr; }
-    .exp-stats { grid-template-columns: 1fr 1fr; }
-    .about-visual { aspect-ratio: 4/3; }
-    .about-badge { display: none; }
-    .vinos-header { flex-direction: column; align-items: flex-start; gap: 20px; }
-  }
-
-  @media (max-width: 600px) {
-    section { padding: 70px 5%; }
-    .vinos-grid { grid-template-columns: 1fr; }
-  }
-</style>
+<meta charset=UTF-8>
+<meta name=viewport content="width=device-width, initial-scale=1.0">
+<title>A lo que Vino | Vinoteca â€“ ConcepciÃ³n del Uruguay</title>
+<link rel=icon type=image/png href=https://res.cloudinary.com/dp8qpqog1/image/upload/q_auto/f_auto/v1780811737/650829241_18057992165476903_7334256583987012667_n_bssqm7.jpg>
+<link rel=preconnect href=https://fonts.googleapis.com>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel=stylesheet>
+<link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css>
+<style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}:root{--wine:#7e0c0c;--wine-deep:#530707;--gold:#b8821a;--gold-light:#d4a438;--cream:#faf6f0;--cream-dark:#f0e8db;--dark:#1a1208;--text:#3d2b10;--muted:#8a7158;--white:#fff;--nav-h:80px}html{scroll-behavior:smooth}body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--text);font-weight:300;line-height:1.7;overflow-x:hidden}nav{position:fixed;top:0;left:0;right:0;z-index:9999;height:var(--nav-h);display:flex;align-items:center;justify-content:space-between;padding:0 5%;background:rgba(250,246,240,0.97);border-bottom:1px solid rgba(184,130,26,0.2);backdrop-filter:blur(8px);transition:box-shadow .3s}nav.scrolled{box-shadow:0 2px 20px rgba(126,12,12,0.08)}.nav-logo{display:flex;align-items:center;gap:14px;text-decoration:none}.nav-logo img{height:52px;width:auto}.nav-logo-text{display:flex;flex-direction:column;line-height:1.1}.nav-logo-text span:first-child{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--wine);letter-spacing:.5px}.nav-logo-text span:last-child{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);font-weight:500}.nav-links{display:flex;align-items:center;gap:36px;list-style:none}.nav-links a{font-size:11px;letter-spacing:2px;text-transform:uppercase;font-weight:500;color:var(--text);text-decoration:none;position:relative;padding-bottom:3px;transition:color .25s}.nav-links a::after{content:'';position:absolute;bottom:0;left:0;width:0;height:1px;background:var(--wine);transition:width .3s}.nav-links a:hover{color:var(--wine)}.nav-links a:hover::after{width:100%}.nav-social{display:flex;gap:16px}.nav-social a{color:var(--muted);text-decoration:none;font-size:15px;transition:color .25s}.nav-social a:hover{color:var(--wine)}.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer}.hamburger span{width:24px;height:1.5px;background:var(--text);display:block;transition:all .3s}.hero{height:100vh;min-height:600px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;background:var(--dark)}.hero-slides{position:absolute;inset:0}.hero-slide{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transition:opacity 1.5s ease}.hero-slide.active{opacity:1}.hero-slide::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,rgba(26,18,8,0.35) 0,rgba(26,18,8,0.55) 100%)}.slide-1{background:radial-gradient(ellipse at 30% 40%,#5a0d0d 0,#1a0808 50%,#0d0503 100%)}.slide-2{background:radial-gradient(ellipse at 70% 60%,#3d1a02 0,#1a0808 40%,#080310 100%)}.slide-3{background:radial-gradient(ellipse at 50% 30%,#4a1a08 0,#200808 50%,#0a0508 100%)}.hero-content{position:relative;z-index:2;text-align:center;color:var(--white);padding:0 20px;animation:fadeUp .9s ease both;animation-delay:.3s}.hero-eyebrow{font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--gold-light);font-weight:500;margin-bottom:20px;display:block}.hero-title{font-family:'Cormorant Garamond',serif;font-size:clamp(52px,8vw,96px);font-weight:300;line-height:1.0;letter-spacing:-1px;margin-bottom:24px}.hero-title em{font-style:italic;color:var(--gold-light)}.hero-subtitle{font-size:14px;letter-spacing:1.5px;opacity:.8;margin-bottom:44px;font-weight:300}.hero-cta{display:inline-flex;gap:16px;flex-wrap:wrap;justify-content:center}.hero-pills{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:28px}.hero-pill{padding:8px 18px;font-size:12px;letter-spacing:.5px;border:1px solid rgba(255,255,255,0.25);color:rgba(255,255,255,0.85);background:rgba(255,255,255,0.07);backdrop-filter:blur(4px)}.btn{display:inline-block;padding:14px 36px;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;font-weight:500;text-decoration:none;cursor:pointer;transition:all .3s;border:0;font-family:'Jost',sans-serif}.btn-primary{background:var(--wine);color:var(--white);border:1px solid var(--wine)}.btn-primary:hover{background:var(--wine-deep);border-color:var(--wine-deep)}.btn-outline{background:transparent;color:var(--white);border:1px solid rgba(255,255,255,0.6)}.btn-outline:hover{background:rgba(255,255,255,0.1);border-color:var(--white)}.hero-scroll{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);z-index:2;display:flex;flex-direction:column;align-items:center;gap:8px;color:rgba(255,255,255,0.5);font-size:9px;letter-spacing:3px;text-transform:uppercase;animation:float 2.5s ease-in-out infinite}.hero-scroll svg{opacity:.5}.divider{display:flex;align-items:center;gap:20px;margin:0 auto 50px;width:fit-content}.divider-line{width:60px;height:1px;background:var(--gold);opacity:.4}.divider svg{color:var(--gold);opacity:.7}section{padding:100px 5%}.section-inner{max-width:1200px;margin:0 auto}.section-label{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);font-weight:500;margin-bottom:12px;display:block}.section-title{font-family:'Cormorant Garamond',serif;font-size:clamp(34px,5vw,56px);font-weight:300;line-height:1.1;color:var(--wine-deep);margin-bottom:24px}.section-title em{font-style:italic}.section-body{font-size:15px;color:var(--muted);max-width:540px;line-height:1.85}.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}.about-visual{position:relative;aspect-ratio:3/4;background:var(--wine-deep);overflow:hidden}.about-visual::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 60%,rgba(184,130,26,0.2) 0,transparent 70%)}.about-visual-inner{position:absolute;inset:24px;border:1px solid rgba(184,130,26,0.3);display:flex;align-items:center;justify-content:center}.about-logo-large{opacity:.15;filter:invert(1) brightness(2);width:60%;height:auto}.about-badge{position:absolute;bottom:-20px;right:-20px;width:120px;height:120px;background:var(--gold);border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--white);text-align:center}.about-badge strong{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:600;line-height:1}.about-badge span{font-size:9px;letter-spacing:2px;text-transform:uppercase;opacity:.85}.about-text{padding-left:20px}.about-features{margin-top:36px;display:flex;flex-direction:column;gap:20px}.about-feature{display:flex;gap:16px;align-items:flex-start}.about-feature-icon{width:36px;height:36px;border-radius:50%;background:rgba(126,12,12,0.08);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:var(--wine)}.about-feature p{font-size:14px;color:var(--muted);margin-top:2px}.about-feature strong{color:var(--text);font-weight:500;font-size:15px;display:block}.vinos-section{background:var(--cream-dark)}.vinos-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:60px}.vinos-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}.vino-card{position:relative;overflow:hidden;aspect-ratio:2/3;background:var(--dark);cursor:pointer}.vino-card-bg{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform .6s ease}.vino-card:hover .vino-card-bg{transform:scale(1.06)}.vino-card-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(26,18,8,0.9) 0,transparent 60%);display:flex;flex-direction:column;justify-content:flex-end;padding:32px;color:var(--white);transition:opacity .3s}.vino-card-label{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gold-light);margin-bottom:6px}.vino-card-name{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;line-height:1.1}.vino-card-region{font-size:12px;color:rgba(255,255,255,0.6);margin-top:4px}.vino-card-detail{position:absolute;inset:0;background:rgba(126,12,12,0.9);display:flex;flex-direction:column;justify-content:center;align-items:center;padding:32px;text-align:center;color:var(--white);opacity:0;transition:opacity .3s}.vino-card:hover .vino-card-detail{opacity:1}.vino-card-detail p{font-size:13px;opacity:.85;margin:12px 0 20px;line-height:1.7}.bg-tinto{background:radial-gradient(ellipse at 50% 80%,#6b0d0d 0,#2d0505 100%)}.bg-blanco{background:radial-gradient(ellipse at 50% 30%,#6b5c1a 0,#2d2605 100%)}.bg-rosado{background:radial-gradient(ellipse at 50% 50%,#8a2040 0,#3d0d1c 100%)}.bg-espumante{background:radial-gradient(ellipse at 50% 20%,#5c5020 0,#252012 100%)}.bg-reserva{background:radial-gradient(ellipse at 30% 60%,#4a0808 0,#1a0202 100%)}.bg-natural{background:radial-gradient(ellipse at 70% 40%,#4a3010 0,#1a1005 100%)}.vino-icon{font-size:48px;opacity:.3;margin-bottom:16px;font-family:'Cormorant Garamond',serif;font-weight:300;color:var(--gold-light)}.exp-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}.exp-stats{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-top:50px}.exp-stat{padding:30px 24px;background:var(--wine);color:var(--white);text-align:center}.exp-stat:nth-child(even){background:var(--wine-deep)}.exp-stat strong{font-family:'Cormorant Garamond',serif;font-size:48px;font-weight:300;display:block;line-height:1;color:var(--gold-light)}.exp-stat span{font-size:10px;letter-spacing:2px;text-transform:uppercase;opacity:.8;margin-top:6px;display:block}.exp-visual{position:relative;padding:40px;background:var(--cream-dark)}.exp-visual-quote{font-family:'Cormorant Garamond',serif;font-size:clamp(18px,2.5vw,26px);font-weight:300;font-style:italic;color:var(--wine-deep);line-height:1.5;position:relative;z-index:1}.exp-visual-quote::before{content:'"';font-size:120px;color:var(--gold);opacity:.12;position:absolute;top:-30px;left:-10px;z-index:0;font-family:'Cormorant Garamond',serif;line-height:1}.exp-visual-attr{margin-top:20px;font-size:12px;color:var(--muted);letter-spacing:1px}.exp-services{margin-top:40px;display:flex;flex-direction:column;gap:0}.exp-service{display:flex;align-items:center;gap:20px;padding:20px 0;border-bottom:1px solid rgba(184,130,26,0.15)}.exp-service:first-child{border-top:1px solid rgba(184,130,26,0.15)}.exp-service-num{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:var(--gold);opacity:.6;min-width:44px;text-align:center}.exp-service strong{display:block;font-weight:500;font-size:15px;margin-bottom:2px}.exp-service p{font-size:13px;color:var(--muted)}.contacto-section{background:var(--wine-deep);color:var(--white)}.contacto-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start}.contacto-section .section-title{color:var(--cream)}.contacto-section .section-label{color:var(--gold-light)}.contacto-section .section-body{color:rgba(255,255,255,0.65)}.contacto-info{display:flex;flex-direction:column;gap:28px;margin-top:40px}.contacto-item{display:flex;gap:16px;align-items:flex-start}.contacto-icon{width:40px;height:40px;border:1px solid rgba(184,130,26,0.4);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--gold-light)}.contacto-item strong{display:block;color:var(--white);font-weight:400;font-size:14px;margin-bottom:2px}.contacto-item span{font-size:13px;color:rgba(255,255,255,0.55)}.contacto-form{display:flex;flex-direction:column;gap:16px;margin-top:40px}.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}.form-field{display:flex;flex-direction:column;gap:6px}.form-field label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.5)}.form-field input,.form-field textarea,.form-field select{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.15);color:var(--white);padding:12px 16px;font-family:'Jost',sans-serif;font-size:14px;font-weight:300;outline:0;transition:border-color .25s}.form-field input:focus,.form-field textarea:focus,.form-field select:focus{border-color:var(--gold)}.form-field input::placeholder,.form-field textarea::placeholder{color:rgba(255,255,255,0.3)}.form-field textarea{resize:vertical;min-height:100px}.form-field select option{background:var(--wine-deep)}.btn-wine{background:var(--gold);color:var(--dark);border:0;padding:16px 36px;align-self:flex-start;margin-top:8px}.btn-wine:hover{background:var(--gold-light)}.horarios{margin-top:36px}.horarios-title{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gold-light);margin-bottom:16px}.horario-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.08);font-size:13px}.horario-row:last-child{border-bottom:0}.horario-row span:first-child{color:rgba(255,255,255,0.6)}.horario-row span:last-child{color:var(--white);font-weight:400}.map-section{padding:0}.map-embed{width:100%;height:380px;border:0;filter:sepia(20%) contrast(1.05)}footer{background:var(--dark);color:rgba(255,255,255,0.5);padding:50px 5% 30px}.footer-inner{max-width:1200px;margin:0 auto}.footer-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:40px}.footer-logo img{height:44px;filter:brightness(0) invert(1);opacity:.7}.footer-tagline{font-family:'Cormorant Garamond',serif;font-size:15px;font-style:italic;color:rgba(255,255,255,0.4);margin-top:8px}.footer-nav{display:flex;gap:60px}.footer-nav-col h4{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold-light);margin-bottom:16px;font-weight:500}.footer-nav-col ul{list-style:none;display:flex;flex-direction:column;gap:10px}.footer-nav-col a{color:rgba(255,255,255,0.45);text-decoration:none;font-size:13px;transition:color .25s}.footer-nav-col a:hover{color:var(--gold-light)}.footer-bottom{border-top:1px solid rgba(255,255,255,0.08);padding-top:24px;display:flex;justify-content:space-between;align-items:center}.footer-credit{font-size:11px}.footer-credit a{color:var(--gold-light);text-decoration:none;opacity:.7}.footer-social{display:flex;gap:16px}.footer-social a{color:rgba(255,255,255,0.4);font-size:16px;text-decoration:none;transition:color .25s}.footer-social a:hover{color:var(--gold-light)}@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}@keyframes float{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}.reveal{opacity:0;transform:translateY(30px);transition:opacity .8s ease,transform .8s ease}.reveal.in{opacity:1;transform:translateY(0)}.reveal-delay-1{transition-delay:.1s}.reveal-delay-2{transition-delay:.2s}.reveal-delay-3{transition-delay:.3s}@media(max-width:900px){.nav-links,.nav-social{display:none}.hamburger{display:flex}nav.open .nav-links{display:flex;flex-direction:column;position:absolute;top:var(--nav-h);left:0;right:0;background:rgba(250,246,240,0.98);padding:24px 5%;gap:20px;border-bottom:1px solid rgba(184,130,26,0.2)}.about-grid,.exp-grid,.contacto-grid{grid-template-columns:1fr;gap:40px}.vinos-grid{grid-template-columns:repeat(2,1fr)}.footer-top{flex-direction:column;gap:30px}.footer-nav{flex-direction:column;gap:24px}.form-row{grid-template-columns:1fr}.exp-stats{grid-template-columns:1fr 1fr}.about-visual{aspect-ratio:4/3}.about-badge{display:none}.vinos-header{flex-direction:column;align-items:flex-start;gap:20px}}@media(max-width:600px){section{padding:70px 5%}.vinos-grid{grid-template-columns:1fr}}</style>
 </head>
 <body>
-
-<!-- ═══════════════ NAV ═══════════════ -->
-<nav id="main-nav">
-  <a href="#inicio" class="nav-logo">
-    <!-- LOGO NAV: imagen del logo en la barra de navegación -->
-    <img src="https://res.cloudinary.com/dp8qpqog1/image/upload/v1780811737/650829241_18057992165476903_7334256583987012667_n_bssqm7.jpg" alt="Logo A lo que Vino">
-    <div class="nav-logo-text">
-      <span>A lo que Vino</span>
-      <span>Vinoteca · Concepción del Uruguay</span>
-    </div>
-  </a>
-
-  <ul class="nav-links">
-    <li><a href="#nosotros">Nosotros</a></li>
-    <li><a href="#vinos">Vinos</a></li>
-    <li><a href="#experiencia">Experiencia</a></li>
-    <li><a href="#contacto">Contacto</a></li>
-  </ul>
-
-  <div class="nav-social">
-    <a href="#" title="Instagram">
-      <i class="fa-brands fa-instagram"></i>
-    </a>
-    <a href="#" title="Facebook">
-      <i class="fa-brands fa-facebook-f"></i>
-    </a>
-    <a href="mailto:info@aloquevino.com.ar" title="Email">&#x40;</a>
-  </div>
-
-  <div class="hamburger" id="hamburger" onclick="toggleMenu()">
-    <span></span><span></span><span></span>
-  </div>
-</nav>
-
-<!-- ═══════════════ HERO ═══════════════ -->
-<section class="hero" id="inicio">
-  <div class="hero-slides">
-    <!--
-    ══════════════════════════════════════════════════════
-    IMÁGENES DEL HERO (slideshow de fondo)
-    ══════════════════════════════════════════════════════
-    Cada .hero-slide es una diapositiva del fondo del hero.
-    Actualmente tienen gradientes de color vino como placeholder.
-
-    Para poner fotos reales, agregá en el atributo style:
-      background-image: url('TU_URL_DE_IMAGEN');
-    Ejemplo:
-      <div class="hero-slide active" style="background-image: url('https://res.cloudinary.com/.../foto-interior.jpg')"></div>
-
-    Tamaño recomendado: 1920×1080px o más. Orientación horizontal.
-    Sugerencias de fotos: interior de la vinoteca, estantes con botellas,
-    copas servidas, bodegas, viñedos.
-    ══════════════════════════════════════════════════════
-    -->
-    <!-- SLIDE 1: foto principal del hero (la primera que se ve al cargar) -->
-    <div class="hero-slide slide-1 active"></div>
-    <!-- SLIDE 2: segunda foto del slideshow -->
-    <div class="hero-slide slide-2"></div>
-    <!-- SLIDE 3: tercera foto del slideshow -->
-    <div class="hero-slide slide-3"></div>
-  </div>
-
-  <div class="hero-content">
-    <span class="hero-eyebrow">Tibiletti 392 · Concepción del Uruguay, Entre Ríos</span>
-    <h1 class="hero-title">
-      A lo que<br><em>Vino</em>
-    </h1>
-    <p class="hero-subtitle">Vinoteca especializada · Selección cuidada · Asesoramiento personalizado</p>
-    <div class="hero-pills">
-      <span class="hero-pill"> Más de 50 etiquetas</span>
-      <span class="hero-pill"> Delivery en C. del Ur.</span>
-      <span class="hero-pill"> Regalos corporativos</span>
-      <span class="hero-pill"> Catas &amp; eventos</span>
-    </div>
-    <a href="#nosotros" class="btn btn-outline" style="margin-top:36px;">Conocé la vinoteca</a>
-  </div>
-
-  <div class="hero-scroll">
-    <svg width="16" height="24" viewBox="0 0 16 24" fill="none">
-      <rect x="0.5" y="0.5" width="15" height="23" rx="7.5" stroke="white" stroke-opacity=".4"/>
-      <circle cx="8" cy="8" r="2" fill="white" fill-opacity=".6">
-        <animateTransform attributeName="transform" type="translate" values="0 0;0 6;0 0" dur="1.8s" repeatCount="indefinite"/>
-      </circle>
-    </svg>
-    <span>Scroll</span>
-  </div>
-</section>
-
-<!-- ═══════════════ NOSOTROS ═══════════════ -->
-<section id="nosotros">
-  <div class="section-inner">
-    <div class="about-grid">
-      <div class="about-visual reveal">
-        <div class="about-visual-inner">
-          <!-- LOGO ABOUT: logo decorativo sobre el panel oscuro de "Nosotros".
-               El filtro invert(1) lo muestra en blanco sobre el fondo vino.
-               Si el logo tiene fondo transparente (PNG), sacar el filter. -->
-          <img class="about-logo-large"
-            src="https://res.cloudinary.com/dp8qpqog1/image/upload/v1780811737/650829241_18057992165476903_7334256583987012667_n_bssqm7.jpg"
-            alt="A lo que Vino">
-        </div>
-        <div class="about-badge">
-          <strong>10+</strong>
-          <span>años de pasión</span>
-        </div>
-      </div>
-
-      <div class="about-text reveal reveal-delay-1">
-        <span class="section-label">Nuestra historia</span>
-        <h2 class="section-title">La vinoteca de<br><em>tu barrio</em></h2>
-        <p class="section-body">
-          En el corazón de Concepción del Uruguay, somos mucho más que una vinoteca. Somos ese rincón donde encontrás el vino que estabas buscando y el que nunca supiste que necesitabas.
-        </p>
-        <p class="section-body" style="margin-top:16px;">
-          Nuestro equipo selecciona personalmente cada etiqueta: bodegas tradicionales de Mendoza, propuestas naturales de San Juan, y pequeñas producciones que merecen ser conocidas.
-        </p>
-
-        <div class="about-features">
-          <div class="about-feature reveal reveal-delay-1">
-            <div class="about-feature-icon">
-              <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                <path d="M8 0C5 0 3 2.5 3 5c0 1.8.8 3.4 2 4.5V16h6V9.5C12.2 8.4 13 6.8 13 5 13 2.5 11 0 8 0z"/>
-              </svg>
-            </div>
-            <div>
-              <strong>Selección curada</strong>
-              <p>Más de 200 etiquetas de las mejores bodegas argentinas y del mundo.</p>
-            </div>
-          </div>
-          <div class="about-feature reveal reveal-delay-2">
-            <div class="about-feature-icon">
-              <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                <path d="M8 1a7 7 0 100 14A7 7 0 008 1zm0 2a5 5 0 110 10A5 5 0 018 3zm.5 2.5h-1v4l3.5 2.1.5-.9-3-1.8V5.5z"/>
-              </svg>
-            </div>
-            <div>
-              <strong>Asesoramiento personalizado</strong>
-              <p>Te ayudamos a encontrar el vino perfecto para cada ocasión y maridaje.</p>
-            </div>
-          </div>
-          <div class="about-feature reveal reveal-delay-3">
-            <div class="about-feature-icon">
-              <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                <path d="M13 2L3 9l4 1-2 4 8-7-3-1z"/>
-              </svg>
-            </div>
-            <div>
-              <strong>Entregas a domicilio</strong>
-              <p>Llevamos el vino hasta tu puerta en toda Concepción del Uruguay.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════════════ VINOS ═══════════════ -->
-<section class="vinos-section" id="vinos">
-  <div class="section-inner">
-    <div class="vinos-header">
-      <div>
-        <span class="section-label">Nuestra carta</span>
-        <h2 class="section-title">Vinos que <em>enamoran</em></h2>
-      </div>
-      <a href="#contacto" class="btn btn-primary" style="align-self:flex-end;">Consultar stock</a>
-    </div>
-
-    <div class="vinos-grid">
-      <!--
-      ══════════════════════════════════════════════════════
-      IMÁGENES DE LAS TARJETAS DE VINOS
-      ══════════════════════════════════════════════════════
-      Cada .vino-card-bg tiene una clase de color como placeholder (bg-tinto, bg-blanco, etc.)
-      Para poner fotos reales, agregá background-image en el div:
-        <div class="vino-card-bg" style="background-image: url('URL')"></div>
-      O definí la clase en el CSS con el background-image:
-        .bg-tinto { background-image: url('...'); background-size: cover; }
-
-      Tamaño recomendado: 600×900px o ratio 2:3 (vertical). Formato JPG/WebP.
-      ══════════════════════════════════════════════════════
-      -->
-
-      <!-- TARJETA 1 VINOS: Tintos – bg-tinto es el color placeholder -->
-      <div class="vino-card reveal">
-        <div class="vino-card-bg" style="background-image: url('https://res.cloudinary.com/dp8qpqog1/image/upload/q_auto/f_auto/v1780968312/lefteris-kallergis-etWlaoFnTl4-unsplash_yxkrzb.jpg')"></div>
-          <div class="vino-card-overlay">
-            <span class="vino-card-label">Tintos</span>
-            <div class="vino-card-name">Grandes Tintos</div>
-            <div class="vino-card-region">Malbec · Cabernet · Syrah</div>
-          </div>
-
-          <div class="vino-card-detail">
-            <div class="vino-icon">♦</div>
-            <div class="vino-card-name">Tintos Argentinos</div>
-            <p>Malbec de Luján de Cuyo, Cabernet Franc del Valle de Uco. Cuerpos plenos, taninos sedosos.</p>
-            <a href="#contacto" class="btn btn-outline" style="font-size:10px; padding:10px 24px;">Ver disponibilidad</a>
-          </div>
-        </div>
-      <!-- TARJETA 2 VINOS: Blancos – reemplazar bg-blanco con foto real si tenés -->
-      <div class="vino-card reveal reveal-delay-1">
-        <div class="vino-card-bg" style="background-image: url('https://res.cloudinary.com/dp8qpqog1/image/upload/q_auto/f_auto/v1780967319/christine-isakzhanova-H3QLXBmmgtA-unsplash_mfuygp.jpg')"></div>
-        <div class="vino-card-overlay">
-          <span class="vino-card-label">Blancos</span>
-          <div class="vino-card-name">Blancos Elegantes</div>
-          <div class="vino-card-region">Chardonnay · Torrontés · Sauvignon</div>
-        </div>
-        <div class="vino-card-detail">
-          <div class="vino-icon">◇</div>
-          <div class="vino-card-name">Blancos Varietales</div>
-          <p>Desde el Torrontés aromático de Salta hasta el Chardonnay mantecoso de Mendoza.</p>
-          <a href="#contacto" class="btn btn-outline" style="font-size:10px; padding:10px 24px;">Ver disponibilidad</a>
-        </div>
-      </div>
-
-      <!-- TARJETA 3 VINOS: Rosados -->
-      <div class="vino-card reveal reveal-delay-2">
-        <div class="vino-card-bg" style="background-image: url('https://res.cloudinary.com/dp8qpqog1/image/upload/q_auto/f_auto/v1780983655/vidar-nordli-mathisen-GP653TaB_ho-unsplash_beihbi.jpg')"></div>
-        <div class="vino-card-overlay">
-          <span class="vino-card-label">Rosados</span>
-          <div class="vino-card-name">Rosés Frescos</div>
-          <div class="vino-card-region">Malbec Rosé · Pinot Rosé</div>
-        </div>
-        <div class="vino-card-detail">
-          <div class="vino-icon">✿</div>
-          <div class="vino-card-name">Rosados & Rosés</div>
-          <p>Frescos, frutados y versátiles. Ideales para el verano o un almuerzo liviano.</p>
-          <a href="#contacto" class="btn btn-outline" style="font-size:10px; padding:10px 24px;">Ver disponibilidad</a>
-        </div>
-      </div>
-
-      <!-- TARJETA 4 VINOS: Espumantes -->
-      <div class="vino-card reveal">
-        <div class="vino-card-bg" style="background-image: url('https://res.cloudinary.com/dp8qpqog1/image/upload/q_auto/f_auto/v1780983867/michelle-mcewen-HPM3jVF8_as-unsplash_xixfrz.jpg')"></div>
-        <div class="vino-card-overlay">
-          <span class="vino-card-label">Espumantes</span>
-          <div class="vino-card-name">Burbujas para Celebrar</div>
-          <div class="vino-card-region">Brut · Brut Nature · Demi Sec</div>
-        </div>
-        <div class="vino-card-detail">
-          <div class="vino-icon">✦</div>
-          <div class="vino-card-name">Espumantes</div>
-          <p>Método champenoise y charmat. Chandon, Zuccardi, Navarro Correas y pequeñas bodegas.</p>
-          <a href="#contacto" class="btn btn-outline" style="font-size:10px; padding:10px 24px;">Ver disponibilidad</a>
-        </div>
-      </div>
-
-      <!-- TARJETA 5 VINOS: Reservas / alta gama -->
-      <div class="vino-card reveal reveal-delay-1">
-        <div class="vino-card-bg" style="background-image: url('https://res.cloudinary.com/dp8qpqog1/image/upload/q_auto/f_auto/v1780983981/joseph-costa-K0EDv_f70Ts-unsplash_kvt9fs.jpg')"></div>
-        <div class="vino-card-overlay">
-          <span class="vino-card-label">Alta gama</span>
-          <div class="vino-card-name">Reservas y Gran Reserva</div>
-          <div class="vino-card-region">Premium · Edición Limitada</div>
-        </div>
-        <div class="vino-card-detail">
-          <div class="vino-icon">★</div>
-          <div class="vino-card-name">Etiquetas Premium</div>
-          <p>Para las ocasiones especiales. Wines de autor, colecciones limitadas y añadas exclusivas.</p>
-          <a href="#contacto" class="btn btn-outline" style="font-size:10px; padding:10px 24px;">Ver disponibilidad</a>
-        </div>
-      </div>
-
-      <!-- TARJETA 6 VINOS: Naturales y orgánicos -->
-      <div class="vino-card reveal reveal-delay-2">
-        <div class="vino-card-bg" style="background-image: url('https://res.cloudinary.com/dp8qpqog1/image/upload/q_auto/f_auto/v1780983995/udit-chandra-ctKH9oC1AhU-unsplash_npy0u8.jpg')"></div>
-        <div class="vino-card-overlay">
-          <span class="vino-card-label">Vinos naturales</span>
-          <div class="vino-card-name">Naturales & Orgánicos</div>
-          <div class="vino-card-region">Sin sulfitos · Biodinámica</div>
-        </div>
-        <div class="vino-card-detail">
-          <div class="vino-icon">⌘</div>
-          <div class="vino-card-name">Vinos Naturales</div>
-          <p>Elaborados sin intervención química. Expresión pura del terroir argentino.</p>
-          <a href="#contacto" class="btn btn-outline" style="font-size:10px; padding:10px 24px;">Ver disponibilidad</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════════════ EXPERIENCIA ═══════════════ -->
-<section id="experiencia">
-  <div class="section-inner">
-    <div class="exp-grid">
-      <div>
-        <span class="section-label">Por qué elegirnos</span>
-        <h2 class="section-title">Una experiencia <em>única</em></h2>
-        <p class="section-body">No solo vendemos vino. Compartimos nuestra pasión, te contamos la historia de cada botella y te ayudamos a descubrir nuevos sabores.</p>
-
-        <div class="exp-services reveal">
-          <div class="exp-service">
-            <span class="exp-service-num">01</span>
-            <div>
-              <strong>Catas y degustaciones</strong>
-              <p>Eventos mensuales donde descubrís nuevas bodegas y regiones con expertos.</p>
-            </div>
-          </div>
-          <div class="exp-service">
-            <span class="exp-service-num">02</span>
-            <div>
-              <strong>Maridaje personalizado</strong>
-              <p>Te recomendamos el vino ideal para cada plato, ocasión o regalo.</p>
-            </div>
-          </div>
-          <div class="exp-service">
-            <span class="exp-service-num">03</span>
-            <div>
-              <strong>Armar tu caja</strong>
-              <p>Diseñá tu mix personalizado con la mejor relación precio-calidad.</p>
-            </div>
-          </div>
-          <div class="exp-service">
-            <span class="exp-service-num">04</span>
-            <div>
-              <strong>Regalos corporativos</strong>
-              <p>Cajas premium para empresas, eventos y celebraciones especiales.</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="exp-stats reveal" style="margin-top:0;">
-          <div class="exp-stat">
-            <strong>200+</strong>
-            <span>Etiquetas disponibles</span>
-          </div>
-          <div class="exp-stat">
-            <strong>10+</strong>
-            <span>Años de experiencia</span>
-          </div>
-          <div class="exp-stat">
-            <strong>50+</strong>
-            <span>Bodegas seleccionadas</span>
-          </div>
-          <div class="exp-stat">
-            <strong>100%</strong>
-            <span>Clientes satisfechos</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="reveal reveal-delay-1">
-        <div class="exp-visual">
-          <p class="exp-visual-quote">
-            "El vino es la poesía de la tierra. Cada botella cuenta la historia de un suelo, un clima, unas manos."
-          </p>
-          <p class="exp-visual-attr">— Filosofía de A lo que Vino</p>
-        </div>
-
-        <div style="margin-top:2px; background: var(--cream-dark); padding: 32px;">
-          <p style="font-size:13px; color:var(--muted); line-height:1.8;">
-            En <strong style="color:var(--text); font-weight:500;">Tibiletti 392</strong>, encontrás un espacio pensado para los amantes del vino. Climatización controlada, estantes organizados por región y varietal, y un equipo que conoce cada etiqueta de memoria.
-          </p>
-          <p style="font-size:13px; color:var(--muted); margin-top:14px; line-height:1.8;">
-            También podés encargarnos vinos que no tengamos en stock. Si existe, lo conseguimos.
-          </p>
-          <a href="#contacto" class="btn btn-primary" style="margin-top:24px; display:inline-block;">Hablar con un experto</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════════════ CONTACTO ═══════════════ -->
-<section class="contacto-section" id="contacto">
-  <div class="section-inner">
-    <div class="contacto-grid">
-      <div>
-        <span class="section-label">Encontranos</span>
-        <h2 class="section-title">Vení a <em>visitarnos</em></h2>
-        <p class="section-body">Estamos en el centro de Concepción del Uruguay, listos para ayudarte a encontrar el vino perfecto.</p>
-
-        <div class="contacto-info">
-          <div class="contacto-item">
-            <div class="contacto-icon">
-              <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                <path d="M8 0C5.24 0 3 2.24 3 5c0 3.75 5 11 5 11s5-7.25 5-11c0-2.76-2.24-5-5-5zm0 7.5C6.62 7.5 5.5 6.38 5.5 5S6.62 2.5 8 2.5 10.5 3.62 10.5 5 9.38 7.5 8 7.5z"/>
-              </svg>
-            </div>
-            <div>
-              <strong>Dirección</strong>
-              <span>Tibiletti 392, Concepción del Uruguay, Entre Ríos</span>
-            </div>
-          </div>
-          <div class="contacto-item">
-            <div class="contacto-icon">
-              <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                <path d="M3 4a1 1 0 011-1h8a1 1 0 011 1v.5L8 8 3 4.5V4zm0 1.8V12a1 1 0 001 1h8a1 1 0 001-1V5.8L8 9.5 3 5.8z"/>
-              </svg>
-            </div>
-            <div>
-              <strong>Email</strong>
-              <span>info@aloquevino.com.ar</span>
-            </div>
-          </div>
-          <div class="contacto-item">
-            <div class="contacto-icon">
-              <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                <path d="M2 3a1 1 0 011-1h2.5a.5.5 0 01.49.4l.75 3.75a.5.5 0 01-.12.47l-1.5 1.5a8 8 0 004.25 4.25l1.5-1.5a.5.5 0 01.47-.12l3.75.75a.5.5 0 01.4.49V13a1 1 0 01-1 1C5.4 14 2 10.6 2 6.5V3z"/>
-              </svg>
-            </div>
-            <div>
-              <strong>WhatsApp</strong>
-              <span>+54 9 3442 00-0000</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="horarios" style="margin-top:36px;">
-          <p class="horarios-title">Horarios de atención</p>
-          <div class="horario-row"><span>Lunes a Viernes</span><span>10:00 – 13:00 / 17:00 – 21:00</span></div>
-          <div class="horario-row"><span>Sábados</span><span>10:00 – 14:00 / 17:00 – 21:00</span></div>
-          <div class="horario-row"><span>Domingos</span><span>11:00 – 14:00</span></div>
-        </div>
-      </div>
-
-      <div>
-        <div class="contacto-form">
-          <p style="font-size:11px; letter-spacing:3px; text-transform:uppercase; color:rgba(255,255,255,0.4); margin-bottom:8px;">Escribinos</p>
-          <div class="form-row">
-            <div class="form-field">
-              <label>Nombre</label>
-              <input type="text" placeholder="Tu nombre">
-            </div>
-            <div class="form-field">
-              <label>Teléfono</label>
-              <input type="tel" placeholder="Ej: 3442 000000">
-            </div>
-          </div>
-          <div class="form-field">
-            <label>Email</label>
-            <input type="email" placeholder="tu@email.com">
-          </div>
-          <div class="form-field">
-            <label>¿En qué te podemos ayudar?</label>
-            <select>
-              <option value="">Seleccioná una opción</option>
-              <option>Consulta de stock</option>
-              <option>Catas y eventos</option>
-              <option>Regalos corporativos</option>
-              <option>Armado de caja personalizada</option>
-              <option>Entrega a domicilio</option>
-              <option>Otro</option>
-            </select>
-          </div>
-          <div class="form-field">
-            <label>Mensaje</label>
-            <textarea placeholder="Contanos qué estás buscando..."></textarea>
-          </div>
-          <button type="button" class="btn btn-wine" onclick="alert('¡Gracias! Nos ponemos en contacto a la brevedad.')">Enviar consulta</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════════════ MAPA ═══════════════ -->
-<div class="map-section">
-  <iframe
-    class="map-embed"
-    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6761.5!2d-58.2294!3d-32.4843!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95afd6a0e4e28f5f%3A0xa9a19db53f6abc8!2sTibiletti%20392%2C%20Concepci%C3%B3n%20del%20Uruguay%2C%20Entre%20R%C3%ADos!5e0!3m2!1ses!2sar!4v1700000000000"
-    allowfullscreen loading="lazy"
-    referrerpolicy="no-referrer-when-downgrade"
-    title="Ubicación de A lo que Vino">
-  </iframe>
+<nav id=main-nav>
+<a href=#inicio class=nav-logo>
+<img src=https://res.cloudinary.com/dp8qpqog1/image/upload/v1780811737/650829241_18057992165476903_7334256583987012667_n_bssqm7.jpg alt="Logo A lo que Vino">
+<div class=nav-logo-text>
+<span>A lo que Vino</span>
+<span>Vinoteca Â· ConcepciÃ³n del Uruguay</span>
 </div>
-
-<!-- ═══════════════ FOOTER ═══════════════ -->
+</a>
+<ul class=nav-links>
+<li><a href=#nosotros>Nosotros</a></li>
+<li><a href=#vinos>Vinos</a></li>
+<li><a href=#experiencia>Experiencia</a></li>
+<li><a href=#contacto>Contacto</a></li>
+</ul>
+<div class=nav-social>
+<a href=# title=Instagram>
+<i class="fa-brands fa-instagram"></i>
+</a>
+<a href=# title=Facebook>
+<i class="fa-brands fa-facebook-f"></i>
+</a>
+<a href=mailto:info@aloquevino.com.ar title=Email>&#x40;</a>
+</div>
+<div class=hamburger id=hamburger onclick=toggleMenu()>
+<span></span><span></span><span></span>
+</div>
+</nav>
+<section class=hero id=inicio>
+<div class=hero-slides>
+<div class="hero-slide slide-1 active"></div>
+<div class="hero-slide slide-2"></div>
+<div class="hero-slide slide-3"></div>
+</div>
+<div class=hero-content>
+<span class=hero-eyebrow>Tibiletti 392 Â· ConcepciÃ³n del Uruguay, Entre RÃ­os</span>
+<h1 class=hero-title>
+A lo que<br><em>Vino</em>
+</h1>
+<p class=hero-subtitle>Vinoteca especializada Â· SelecciÃ³n cuidada Â· Asesoramiento personalizado</p>
+<div class=hero-pills>
+<span class=hero-pill> MÃ¡s de 50 etiquetas</span>
+<span class=hero-pill> Delivery en C. del Ur.</span>
+<span class=hero-pill> Regalos corporativos</span>
+<span class=hero-pill> Catas &amp; eventos</span>
+</div>
+<a href=#nosotros class="btn btn-outline" style=margin-top:36px>ConocÃ© la vinoteca</a>
+</div>
+<div class=hero-scroll>
+<svg width=16 height=24 viewBox="0 0 16 24" fill=none>
+<rect x=0.5 y=0.5 width=15 height=23 rx=7.5 stroke=white stroke-opacity=".4"/>
+<circle cx=8 cy=8 r=2 fill=white fill-opacity=.6>
+<animateTransform attributeName=transform type=translate values="0 0;0 6;0 0" dur=1.8s repeatCount="indefinite"/>
+</circle>
+</svg>
+<span>Scroll</span>
+</div>
+</section>
+<section id=nosotros>
+<div class=section-inner>
+<div class=about-grid>
+<div class="about-visual reveal">
+<div class=about-visual-inner>
+<img class=about-logo-large src=https://res.cloudinary.com/dp8qpqog1/image/upload/v1780811737/650829241_18057992165476903_7334256583987012667_n_bssqm7.jpg alt="A lo que Vino">
+</div>
+<div class=about-badge>
+<strong>10+</strong>
+<span>aÃ±os de pasiÃ³n</span>
+</div>
+</div>
+<div class="about-text reveal reveal-delay-1">
+<span class=section-label>Nuestra historia</span>
+<h2 class=section-title>La vinoteca de<br><em>tu barrio</em></h2>
+<p class=section-body>
+En el corazÃ³n de ConcepciÃ³n del Uruguay, somos mucho mÃ¡s que una vinoteca. Somos ese rincÃ³n donde encontrÃ¡s el vino que estabas buscando y el que nunca supiste que necesitabas.
+</p>
+<p class=section-body style=margin-top:16px>
+Nuestro equipo selecciona personalmente cada etiqueta: bodegas tradicionales de Mendoza, propuestas naturales de San Juan, y pequeÃ±as producciones que merecen ser conocidas.
+</p>
+<div class=about-features>
+<div class="about-feature reveal reveal-delay-1">
+<div class=about-feature-icon>
+<svg width=16 height=16 fill=currentColor viewBox="0 0 16 16">
+<path d="M8 0C5 0 3 2.5 3 5c0 1.8.8 3.4 2 4.5V16h6V9.5C12.2 8.4 13 6.8 13 5 13 2.5 11 0 8 0z"/>
+</svg>
+</div>
+<div>
+<strong>SelecciÃ³n curada</strong>
+<p>MÃ¡s de 200 etiquetas de las mejores bodegas argentinas y del mundo.</p>
+</div>
+</div>
+<div class="about-feature reveal reveal-delay-2">
+<div class=about-feature-icon>
+<svg width=16 height=16 fill=currentColor viewBox="0 0 16 16">
+<path d="M8 1a7 7 0 100 14A7 7 0 008 1zm0 2a5 5 0 110 10A5 5 0 018 3zm.5 2.5h-1v4l3.5 2.1.5-.9-3-1.8V5.5z"/>
+</svg>
+</div>
+<div>
+<strong>Asesoramiento personalizado</strong>
+<p>Te ayudamos a encontrar el vino perfecto para cada ocasiÃ³n y maridaje.</p>
+</div>
+</div>
+<div class="about-feature reveal reveal-delay-3">
+<div class=about-feature-icon>
+<svg width=16 height=16 fill=currentColor viewBox="0 0 16 16">
+<path d="M13 2L3 9l4 1-2 4 8-7-3-1z"/>
+</svg>
+</div>
+<div>
+<strong>Entregas a domicilio</strong>
+<p>Llevamos el vino hasta tu puerta en toda ConcepciÃ³n del Uruguay.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class=vinos-section id=vinos>
+<div class=section-inner>
+<div class=vinos-header>
+<div>
+<span class=section-label>Nuestra carta</span>
+<h2 class=section-title>Vinos que <em>enamoran</em></h2>
+</div>
+<a href=#contacto class="btn btn-primary" style=align-self:flex-end>Consultar stock</a>
+</div>
+<div class=vinos-grid>
+<div class="vino-card reveal">
+<div class=vino-card-bg style="background-image:url('https://res.cloudinary.com/dp8qpqog1/image/upload/q_auto/f_auto/v1780968312/lefteris-kallergis-etWlaoFnTl4-unsplash_yxkrzb.jpg')"></div>
+<div class=vino-card-overlay>
+<span class=vino-card-label>Tintos</span>
+<div class=vino-card-name>Grandes Tintos</div>
+<div class=vino-card-region>Malbec Â· Cabernet Â· Syrah</div>
+</div>
+<div class=vino-card-detail>
+<div class=vino-icon>â™¦</div>
+<div class=vino-card-name>Tintos Argentinos</div>
+<p>Malbec de LujÃ¡n de Cuyo, Cabernet Franc del Valle de Uco. Cuerpos plenos, taninos sedosos.</p>
+<a href=#contacto class="btn btn-outline" style="font-size:10px;padding:10px 24px">Ver disponibilidad</a>
+</div>
+</div>
+<div class="vino-card reveal reveal-delay-1">
+<div class=vino-card-bg style="background-image:url('https://res.cloudinary.com/dp8qpqog1/image/upload/q_auto/f_auto/v1780967319/christine-isakzhanova-H3QLXBmmgtA-unsplash_mfuygp.jpg')"></div>
+<div class=vino-card-overlay>
+<span class=vino-card-label>Blancos</span>
+<div class=vino-card-name>Blancos Elegantes</div>
+<div class=vino-card-region>Chardonnay Â· TorrontÃ©s Â· Sauvignon</div>
+</div>
+<div class=vino-card-detail>
+<div class=vino-icon>â—‡</div>
+<div class=vino-card-name>Blancos Varietales</div>
+<p>Desde el TorrontÃ©s aromÃ¡tico de Salta hasta el Chardonnay mantecoso de Mendoza.</p>
+<a href=#contacto class="btn btn-outline" style="font-size:10px;padding:10px 24px">Ver disponibilidad</a>
+</div>
+</div>
+<div class="vino-card reveal reveal-delay-2">
+<div class=vino-card-bg style="background-image:url('https://res.cloudinary.com/dp8qpqog1/image/upload/q_auto/f_auto/v1780983655/vidar-nordli-mathisen-GP653TaB_ho-unsplash_beihbi.jpg')"></div>
+<div class=vino-card-overlay>
+<span class=vino-card-label>Rosados</span>
+<div class=vino-card-name>RosÃ©s Frescos</div>
+<div class=vino-card-region>Malbec RosÃ© Â· Pinot RosÃ©</div>
+</div>
+<div class=vino-card-detail>
+<div class=vino-icon>âœ¿</div>
+<div class=vino-card-name>Rosados & RosÃ©s</div>
+<p>Frescos, frutados y versÃ¡tiles. Ideales para el verano o un almuerzo liviano.</p>
+<a href=#contacto class="btn btn-outline" style="font-size:10px;padding:10px 24px">Ver disponibilidad</a>
+</div>
+</div>
+<div class="vino-card reveal">
+<div class=vino-card-bg style="background-image:url('https://res.cloudinary.com/dp8qpqog1/image/upload/q_auto/f_auto/v1780983867/michelle-mcewen-HPM3jVF8_as-unsplash_xixfrz.jpg')"></div>
+<div class=vino-card-overlay>
+<span class=vino-card-label>Espumantes</span>
+<div class=vino-card-name>Burbujas para Celebrar</div>
+<div class=vino-card-region>Brut Â· Brut Nature Â· Demi Sec</div>
+</div>
+<div class=vino-card-detail>
+<div class=vino-icon>âœ¦</div>
+<div class=vino-card-name>Espumantes</div>
+<p>MÃ©todo champenoise y charmat. Chandon, Zuccardi, Navarro Correas y pequeÃ±as bodegas.</p>
+<a href=#contacto class="btn btn-outline" style="font-size:10px;padding:10px 24px">Ver disponibilidad</a>
+</div>
+</div>
+<div class="vino-card reveal reveal-delay-1">
+<div class=vino-card-bg style="background-image:url('https://res.cloudinary.com/dp8qpqog1/image/upload/q_auto/f_auto/v1780983981/joseph-costa-K0EDv_f70Ts-unsplash_kvt9fs.jpg')"></div>
+<div class=vino-card-overlay>
+<span class=vino-card-label>Alta gama</span>
+<div class=vino-card-name>Reservas y Gran Reserva</div>
+<div class=vino-card-region>Premium Â· EdiciÃ³n Limitada</div>
+</div>
+<div class=vino-card-detail>
+<div class=vino-icon>â˜…</div>
+<div class=vino-card-name>Etiquetas Premium</div>
+<p>Para las ocasiones especiales. Wines de autor, colecciones limitadas y aÃ±adas exclusivas.</p>
+<a href=#contacto class="btn btn-outline" style="font-size:10px;padding:10px 24px">Ver disponibilidad</a>
+</div>
+</div>
+<div class="vino-card reveal reveal-delay-2">
+<div class=vino-card-bg style="background-image:url('https://res.cloudinary.com/dp8qpqog1/image/upload/q_auto/f_auto/v1780983995/udit-chandra-ctKH9oC1AhU-unsplash_npy0u8.jpg')"></div>
+<div class=vino-card-overlay>
+<span class=vino-card-label>Vinos naturales</span>
+<div class=vino-card-name>Naturales & OrgÃ¡nicos</div>
+<div class=vino-card-region>Sin sulfitos Â· BiodinÃ¡mica</div>
+</div>
+<div class=vino-card-detail>
+<div class=vino-icon>âŒ˜</div>
+<div class=vino-card-name>Vinos Naturales</div>
+<p>Elaborados sin intervenciÃ³n quÃ­mica. ExpresiÃ³n pura del terroir argentino.</p>
+<a href=#contacto class="btn btn-outline" style="font-size:10px;padding:10px 24px">Ver disponibilidad</a>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id=experiencia>
+<div class=section-inner>
+<div class=exp-grid>
+<div>
+<span class=section-label>Por quÃ© elegirnos</span>
+<h2 class=section-title>Una experiencia <em>Ãºnica</em></h2>
+<p class=section-body>No solo vendemos vino. Compartimos nuestra pasiÃ³n, te contamos la historia de cada botella y te ayudamos a descubrir nuevos sabores.</p>
+<div class="exp-services reveal">
+<div class=exp-service>
+<span class=exp-service-num>01</span>
+<div>
+<strong>Catas y degustaciones</strong>
+<p>Eventos mensuales donde descubrÃ­s nuevas bodegas y regiones con expertos.</p>
+</div>
+</div>
+<div class=exp-service>
+<span class=exp-service-num>02</span>
+<div>
+<strong>Maridaje personalizado</strong>
+<p>Te recomendamos el vino ideal para cada plato, ocasiÃ³n o regalo.</p>
+</div>
+</div>
+<div class=exp-service>
+<span class=exp-service-num>03</span>
+<div>
+<strong>Armar tu caja</strong>
+<p>DiseÃ±Ã¡ tu mix personalizado con la mejor relaciÃ³n precio-calidad.</p>
+</div>
+</div>
+<div class=exp-service>
+<span class=exp-service-num>04</span>
+<div>
+<strong>Regalos corporativos</strong>
+<p>Cajas premium para empresas, eventos y celebraciones especiales.</p>
+</div>
+</div>
+</div>
+<div class="exp-stats reveal" style=margin-top:0>
+<div class=exp-stat>
+<strong>200+</strong>
+<span>Etiquetas disponibles</span>
+</div>
+<div class=exp-stat>
+<strong>10+</strong>
+<span>AÃ±os de experiencia</span>
+</div>
+<div class=exp-stat>
+<strong>50+</strong>
+<span>Bodegas seleccionadas</span>
+</div>
+<div class=exp-stat>
+<strong>100%</strong>
+<span>Clientes satisfechos</span>
+</div>
+</div>
+</div>
+<div class="reveal reveal-delay-1">
+<div class=exp-visual>
+<p class=exp-visual-quote>
+"El vino es la poesÃ­a de la tierra. Cada botella cuenta la historia de un suelo, un clima, unas manos."
+</p>
+<p class=exp-visual-attr>â€” FilosofÃ­a de A lo que Vino</p>
+</div>
+<div style=margin-top:2px;background:var(--cream-dark);padding:32px>
+<p style=font-size:13px;color:var(--muted);line-height:1.8>
+En <strong style=color:var(--text);font-weight:500>Tibiletti 392</strong>, encontrÃ¡s un espacio pensado para los amantes del vino. ClimatizaciÃ³n controlada, estantes organizados por regiÃ³n y varietal, y un equipo que conoce cada etiqueta de memoria.
+</p>
+<p style=font-size:13px;color:var(--muted);margin-top:14px;line-height:1.8>
+TambiÃ©n podÃ©s encargarnos vinos que no tengamos en stock. Si existe, lo conseguimos.
+</p>
+<a href=#contacto class="btn btn-primary" style=margin-top:24px;display:inline-block>Hablar con un experto</a>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class=contacto-section id=contacto>
+<div class=section-inner>
+<div class=contacto-grid>
+<div>
+<span class=section-label>Encontranos</span>
+<h2 class=section-title>VenÃ­ a <em>visitarnos</em></h2>
+<p class=section-body>Estamos en el centro de ConcepciÃ³n del Uruguay, listos para ayudarte a encontrar el vino perfecto.</p>
+<div class=contacto-info>
+<div class=contacto-item>
+<div class=contacto-icon>
+<svg width=16 height=16 fill=currentColor viewBox="0 0 16 16">
+<path d="M8 0C5.24 0 3 2.24 3 5c0 3.75 5 11 5 11s5-7.25 5-11c0-2.76-2.24-5-5-5zm0 7.5C6.62 7.5 5.5 6.38 5.5 5S6.62 2.5 8 2.5 10.5 3.62 10.5 5 9.38 7.5 8 7.5z"/>
+</svg>
+</div>
+<div>
+<strong>DirecciÃ³n</strong>
+<span>Tibiletti 392, ConcepciÃ³n del Uruguay, Entre RÃ­os</span>
+</div>
+</div>
+<div class=contacto-item>
+<div class=contacto-icon>
+<svg width=16 height=16 fill=currentColor viewBox="0 0 16 16">
+<path d="M3 4a1 1 0 011-1h8a1 1 0 011 1v.5L8 8 3 4.5V4zm0 1.8V12a1 1 0 001 1h8a1 1 0 001-1V5.8L8 9.5 3 5.8z"/>
+</svg>
+</div>
+<div>
+<strong>Email</strong>
+<span>info@aloquevino.com.ar</span>
+</div>
+</div>
+<div class=contacto-item>
+<div class=contacto-icon>
+<svg width=16 height=16 fill=currentColor viewBox="0 0 16 16">
+<path d="M2 3a1 1 0 011-1h2.5a.5.5 0 01.49.4l.75 3.75a.5.5 0 01-.12.47l-1.5 1.5a8 8 0 004.25 4.25l1.5-1.5a.5.5 0 01.47-.12l3.75.75a.5.5 0 01.4.49V13a1 1 0 01-1 1C5.4 14 2 10.6 2 6.5V3z"/>
+</svg>
+</div>
+<div>
+<strong>WhatsApp</strong>
+<span>+54 9 3442 00-0000</span>
+</div>
+</div>
+</div>
+<div class=horarios style=margin-top:36px>
+<p class=horarios-title>Horarios de atenciÃ³n</p>
+<div class=horario-row><span>Lunes a Viernes</span><span>10:00 â€“ 13:00 / 17:00 â€“ 21:00</span></div>
+<div class=horario-row><span>SÃ¡bados</span><span>10:00 â€“ 14:00 / 17:00 â€“ 21:00</span></div>
+<div class=horario-row><span>Domingos</span><span>11:00 â€“ 14:00</span></div>
+</div>
+</div>
+<div>
+<div class=contacto-form>
+<p style=font-size:11px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:8px>Escribinos</p>
+<div class=form-row>
+<div class=form-field>
+<label>Nombre</label>
+<input type=text placeholder="Tu nombre">
+</div>
+<div class=form-field>
+<label>TelÃ©fono</label>
+<input type=tel placeholder="Ej: 3442 000000">
+</div>
+</div>
+<div class=form-field>
+<label>Email</label>
+<input type=email placeholder=tu@email.com>
+</div>
+<div class=form-field>
+<label>Â¿En quÃ© te podemos ayudar?</label>
+<select>
+<option value>SeleccionÃ¡ una opciÃ³n</option>
+<option>Consulta de stock</option>
+<option>Catas y eventos</option>
+<option>Regalos corporativos</option>
+<option>Armado de caja personalizada</option>
+<option>Entrega a domicilio</option>
+<option>Otro</option>
+</select>
+</div>
+<div class=form-field>
+<label>Mensaje</label>
+<textarea placeholder="Contanos quÃ© estÃ¡s buscando..."></textarea>
+</div>
+<button type=button class="btn btn-wine" onclick="alert('Â¡Gracias! Nos ponemos en contacto a la brevedad.')">Enviar consulta</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<div class=map-section>
+<iframe class=map-embed src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6761.5!2d-58.2294!3d-32.4843!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95afd6a0e4e28f5f%3A0xa9a19db53f6abc8!2sTibiletti%20392%2C%20Concepci%C3%B3n%20del%20Uruguay%2C%20Entre%20R%C3%ADos!5e0!3m2!1ses!2sar!4v1700000000000" allowfullscreen loading=lazy referrerpolicy=no-referrer-when-downgrade title="UbicaciÃ³n de A lo que Vino">
+</iframe>
+</div>
 <footer>
-  <div class="footer-inner">
-    <div class="footer-top">
-      <div>
-        <div class="footer-logo">
-          <!-- LOGO FOOTER: logo en el pie de página. El CSS aplica brightness(0) invert(1)
-               para mostrarlo en blanco. Si tenés un PNG con fondo transparente, podés
-               sacar ese filter y el logo se va a ver con sus colores originales. -->
-          <img src="https://res.cloudinary.com/dp8qpqog1/image/upload/v1780811737/650829241_18057992165476903_7334256583987012667_n_bssqm7.jpg" alt="A lo que Vino">
-        </div>
-        <p class="footer-tagline">"El vino que estabas buscando"</p>
-        <p style="font-size:12px; color:rgba(255,255,255,0.3); margin-top:12px;">Tibiletti 392 · Concepción del Uruguay, Entre Ríos</p>
-      </div>
-
-      <div class="footer-nav">
-        <div class="footer-nav-col">
-          <h4>Navegación</h4>
-          <ul>
-            <li><a href="#nosotros">Nosotros</a></li>
-            <li><a href="#vinos">Vinos</a></li>
-            <li><a href="#experiencia">Experiencia</a></li>
-            <li><a href="#contacto">Contacto</a></li>
-          </ul>
-        </div>
-        <div class="footer-nav-col">
-          <h4>Servicios</h4>
-          <ul>
-            <li><a href="#experiencia">Catas y eventos</a></li>
-            <li><a href="#experiencia">Maridaje</a></li>
-            <li><a href="#contacto">Delivery</a></li>
-            <li><a href="#contacto">Regalos corporativos</a></li>
-          </ul>
-        </div>
-        <div class="footer-nav-col">
-          <h4>Contacto</h4>
-          <ul>
-            <li><a href="mailto:info@aloquevino.com.ar">info@aloquevino.com.ar</a></li>
-            <li><a href="https://wa.me/5493442000000">WhatsApp</a></li>
-            <li><a href="https://www.instagram.com/aloquevino.vinoteca/">Instagram</a></li>
-            <li><a href="#">Facebook</a></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <div class="footer-bottom">
-      <p class="footer-credit">
-        © 2026 A lo que Vino · Todos los derechos reservados ·
-        Diseño por <a href="#">NEXO Agency</a>
-      </p>
-      <div class="footer-social">
-        <a href="#" title="Instagram">In</a>
-        <a href="#" title="Facebook">Fb</a>
-        <a href="https://wa.me/5493442000000" title="WhatsApp">Wa</a>
-      </div>
-    </div>
-  </div>
+<div class=footer-inner>
+<div class=footer-top>
+<div>
+<div class=footer-logo>
+<img src=https://res.cloudinary.com/dp8qpqog1/image/upload/v1780811737/650829241_18057992165476903_7334256583987012667_n_bssqm7.jpg alt="A lo que Vino">
+</div>
+<p class=footer-tagline>"El vino que estabas buscando"</p>
+<p style=font-size:12px;color:rgba(255,255,255,0.3);margin-top:12px>Tibiletti 392 Â· ConcepciÃ³n del Uruguay, Entre RÃ­os</p>
+</div>
+<div class=footer-nav>
+<div class=footer-nav-col>
+<h4>NavegaciÃ³n</h4>
+<ul>
+<li><a href=#nosotros>Nosotros</a></li>
+<li><a href=#vinos>Vinos</a></li>
+<li><a href=#experiencia>Experiencia</a></li>
+<li><a href=#contacto>Contacto</a></li>
+</ul>
+</div>
+<div class=footer-nav-col>
+<h4>Servicios</h4>
+<ul>
+<li><a href=#experiencia>Catas y eventos</a></li>
+<li><a href=#experiencia>Maridaje</a></li>
+<li><a href=#contacto>Delivery</a></li>
+<li><a href=#contacto>Regalos corporativos</a></li>
+</ul>
+</div>
+<div class=footer-nav-col>
+<h4>Contacto</h4>
+<ul>
+<li><a href=mailto:info@aloquevino.com.ar>info@aloquevino.com.ar</a></li>
+<li><a href=https://wa.me/5493442000000>WhatsApp</a></li>
+<li><a href=https://www.instagram.com/aloquevino.vinoteca/>Instagram</a></li>
+<li><a href=#>Facebook</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div class=footer-bottom>
+<p class=footer-credit>
+Â© 2026 A lo que Vino Â· Todos los derechos reservados Â·
+DiseÃ±o por <a href=#>NEXO Agency</a>
+</p>
+<div class=footer-social>
+<a href=# title=Instagram>In</a>
+<a href=# title=Facebook>Fb</a>
+<a href=https://wa.me/5493442000000 title=WhatsApp>Wa</a>
+</div>
+</div>
+</div>
 </footer>
-
-<script src="script.js"> </script>
+<script src=script.js></script>
 </body>
 </html>
